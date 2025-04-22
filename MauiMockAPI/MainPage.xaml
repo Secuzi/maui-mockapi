@@ -14,6 +14,10 @@
 
             </HorizontalStackLayout>
 
+            <HorizontalStackLayout>
+                <Label Text="{Binding User.Name}"/>
+            </HorizontalStackLayout>
+            
             <CollectionView ItemsSource="{Binding Users}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:UserModel">
