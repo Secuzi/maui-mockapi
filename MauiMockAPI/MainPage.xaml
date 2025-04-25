@@ -7,7 +7,7 @@
     BackgroundColor="#21222A"
     Shell.NavBarIsVisible="False">
 
-    <ScrollView>
+    <ScrollView Padding="0,0,0,40">
         <VerticalStackLayout Margin="16,44,16,0">
             <FlexLayout JustifyContent="SpaceBetween">
 
@@ -69,16 +69,86 @@
                 IsRunning="{Binding IsRunning}"
                 IsVisible="{Binding IsRunning}"
                 Color="#61DAFB" />
-            <CollectionView
-                Margin="0,64,0,0"
-                BackgroundColor="Red"
-                ItemsSource="{Binding Users}">
+            <CollectionView Margin="0,64,0,0" ItemsSource="{Binding Users}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                        HorizontalItemSpacing="16"
+                        Orientation="Vertical"
+                        Span="2"
+                        VerticalItemSpacing="16" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:UserModel">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding UserId}" />
-                            <Label Text="{Binding Name}" />
-                        </VerticalStackLayout>
+                        <Border
+                            Padding="8,14,8,14"
+                            BackgroundColor="#33373E"
+                            Stroke="#33373E"
+                            StrokeShape="RoundRectangle 4,4,4,4">
+                            <VerticalStackLayout>
+                                <Grid ColumnDefinitions="Auto, *">
+
+                                    <Border
+                                        Padding="4"
+                                        BackgroundColor="#454A54"
+                                        HeightRequest="44"
+                                        Stroke="#454A54"
+                                        StrokeShape="RoundRectangle 4,4,4,4">
+                                        <Image
+                                            Aspect="AspectFill"
+                                            Source="{Binding Avatar}"
+                                            WidthRequest="44" />
+
+                                    </Border>
+                                    <Label
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        FlexLayout.Grow="1"
+                                        FontFamily="OutfitMedium"
+                                        FontSize="11"
+                                        Text="{Binding Name}"
+                                        VerticalTextAlignment="Center" />
+                                </Grid>
+
+                                <VerticalStackLayout Margin="0,12,0,0">
+                                    <HorizontalStackLayout Margin="0,0,0,4">
+                                        <Label
+                                            FontFamily="OutfitMedium"
+                                            FontSize="11"
+                                            Text="ID: "
+                                            TextColor="#61DAFB" />
+                                        <Label
+                                            FontFamily="OutfitRegular"
+                                            FontSize="11"
+                                            Text="{Binding UserId}" />
+                                    </HorizontalStackLayout>
+                                    <Label
+                                        FontFamily="OutfitMedium"
+                                        FontSize="11"
+                                        Text="Git Branch: "
+                                        TextColor="#61DAFB" />
+                                    <Label
+                                        FontFamily="OutfitRegular"
+                                        FontSize="11"
+                                        Text="{Binding Branch}" />
+
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Margin="0,4,0,0">
+                                    <Label
+                                        FontFamily="OutfitMedium"
+                                        FontSize="11"
+                                        Text="Message: "
+                                        TextColor="#61DAFB" />
+                                    <Label
+                                        FontFamily="OutfitRegular"
+                                        FontSize="11"
+                                        Text="{Binding CommitMessage}" />
+
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+
+
+
+                        </Border>
                     </DataTemplate>
 
                 </CollectionView.ItemTemplate>
