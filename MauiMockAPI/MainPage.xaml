@@ -9,8 +9,11 @@
         <VerticalStackLayout>
             <HorizontalStackLayout>
                 <Button Command="{Binding GetAllUserCommand}" Text="Show users" />
-                <Entry Placeholder="Ex: 1" />
-                <Button Command="{Binding GetSingleUser}" CommandParameter="{Binding }" Text="Show user" />
+                <Entry Placeholder="Ex: 1" Text="{Binding UserId}" />
+                <Button
+                    Command="{Binding GetSingleUser}"
+                    CommandParameter="{Binding UserId}"
+                    Text="Show user" />
 
             </HorizontalStackLayout>
 

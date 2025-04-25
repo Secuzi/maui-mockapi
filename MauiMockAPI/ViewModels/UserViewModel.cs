@@ -18,6 +18,22 @@ namespace MauiMockAPI.ViewModels
         const string baseUrl = "https://6807401fe81df7060eb95f9f.mockapi.io";
         HttpClient client;
         JsonSerializerOptions _serializerOptions;
+
+        private string _userId;
+        public string UserId
+        {
+            get => _userId;
+            set
+            {
+                if (value != _userId)
+                {
+                    _userId = value;
+                    OnPropertyChanged(nameof(UserId));
+                }
+            }
+        }
+
+
         public HttpClient Client
         {
             get { return client; }
@@ -86,7 +102,7 @@ namespace MauiMockAPI.ViewModels
 
         public ICommand GetSingleUser => new Command<string>(async (string id) =>
         {
-            var url = $"{baseUrl}/user/${id}";
+            var url = $"{baseUrl}/user/{id}";
             try
             {
                 var response = await Client.GetStringAsync(url);
