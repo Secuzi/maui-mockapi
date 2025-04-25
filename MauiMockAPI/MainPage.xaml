@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiMockAPI.MainPage"
-             xmlns:models="clr-namespace:MauiMockAPI.Models"
-             >
+<ContentPage
+    x:Class="MauiMockAPI.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:MauiMockAPI.Models">
 
     <ScrollView>
         <VerticalStackLayout>
             <HorizontalStackLayout>
-                <Button Text="Show users" Command="{Binding GetAllUserCommand}"/>
+                <Button Command="{Binding GetAllUserCommand}" Text="Show users" />
                 <Entry Placeholder="Ex: 1" />
-                <Button Text="Show user"/>
+                <Button Command="{Binding GetSingleUser}" CommandParameter="{Binding }" Text="Show user" />
 
             </HorizontalStackLayout>
 
             <HorizontalStackLayout>
-                <Label Text="{Binding User.Name}"/>
+                <Label Text="{Binding User.Name}" />
             </HorizontalStackLayout>
-            
+
             <CollectionView ItemsSource="{Binding Users}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:UserModel">
                         <VerticalStackLayout>
-                            <Label Text="{Binding UserId}"/>
-                            <Label Text="{Binding Name}"/>
+                            <Label Text="{Binding UserId}" />
+                            <Label Text="{Binding Name}" />
                         </VerticalStackLayout>
                     </DataTemplate>
-                    
+
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            
-            
+
+
         </VerticalStackLayout>
-       
+
     </ScrollView>
 
 </ContentPage>

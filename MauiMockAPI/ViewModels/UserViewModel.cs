@@ -70,13 +70,15 @@ namespace MauiMockAPI.ViewModels
             try
             {
                 var response = await Client.GetStringAsync(url);
-                User = JsonSerializer.Deserialize<UserModel>(response, _serializerOptions);
-                
-            }
-            catch (Exception)
+                Users = [];
+				Users = JsonSerializer.Deserialize<ObservableCollection<UserModel>>(response, _serializerOptions) ?? throw new Exception("Internal Server Error");
+
+
+			}
+			catch (Exception e)
             {
 
-                throw new Exception("Error");
+                throw new Exception(e.Message);
             }
 
 
@@ -88,13 +90,14 @@ namespace MauiMockAPI.ViewModels
             try
             {
                 var response = await Client.GetStringAsync(url);
-                Users = JsonSerializer.Deserialize<ObservableCollection<UserModel>>(response, _serializerOptions);
+				var user = JsonSerializer.Deserialize<UserModel>(response, _serializerOptions) ?? throw new Exception("User not found");
+				Users = [user];
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw new Exception("Error");
+                throw new Exception(e.Message);
             }
 
 
