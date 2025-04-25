@@ -3,25 +3,76 @@
     x:Class="MauiMockAPI.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:models="clr-namespace:MauiMockAPI.Models">
+    xmlns:models="clr-namespace:MauiMockAPI.Models"
+    BackgroundColor="#21222A"
+    Shell.NavBarIsVisible="False">
 
     <ScrollView>
-        <VerticalStackLayout>
-            <HorizontalStackLayout>
-                <Button Command="{Binding GetAllUserCommand}" Text="Show users" />
-                <Entry Placeholder="Ex: 1" Text="{Binding UserId}" />
+        <VerticalStackLayout Margin="16,44,16,0">
+            <FlexLayout JustifyContent="SpaceBetween">
+
+                <Label
+                    FontFamily="OutfitBold"
+                    FontSize="24"
+                    Text="MockApi" />
                 <Button
-                    Command="{Binding GetSingleUser}"
-                    CommandParameter="{Binding UserId}"
-                    Text="Show user" />
+                    Padding="10,4"
+                    BackgroundColor="#33373E"
+                    Command="{Binding GetAllUserCommand}"
+                    FontFamily="OutfitSemiBold"
+                    FontSize="14"
+                    Text="Show users"
+                    TextColor="#61DAFB" />
+            </FlexLayout>
 
-            </HorizontalStackLayout>
+            <FlexLayout
+                Margin="0,46,0,0"
+                AlignItems="Center"
+                JustifyContent="Center">
+                <HorizontalStackLayout>
+                    <Border
+                        Margin="0,0,-12,0"
+                        Padding="8,0,8,0"
+                        BackgroundColor="White"
+                        Stroke="White"
+                        StrokeShape="RoundRectangle 6,0,6,0"
+                        WidthRequest="194">
+                        <Entry
+                            BackgroundColor="White"
+                            FontFamily="OutfitSemiBold"
+                            Placeholder="Ex: 1"
+                            Text="{Binding UserId}"
+                            TextColor="Black" />
+                    </Border>
+                    <Border
+                        BackgroundColor="#33373E"
+                        Stroke="#33373E"
+                        StrokeShape="RoundRectangle 0,6,0,6">
 
-            <HorizontalStackLayout>
-                <Label Text="{Binding User.Name}" />
-            </HorizontalStackLayout>
+                        <Button
+                            BackgroundColor="#33373E"
+                            Command="{Binding GetSingleUser}"
+                            CommandParameter="{Binding UserId}"
+                            FontFamily="OutfitSemiBold"
+                            FontSize="14"
+                            Text="Show user"
+                            TextColor="#61DAFB" />
+                    </Border>
 
-            <CollectionView ItemsSource="{Binding Users}">
+
+                </HorizontalStackLayout>
+            </FlexLayout>
+
+
+            <ActivityIndicator
+                Margin="0,84,0,0"
+                IsRunning="{Binding IsRunning}"
+                IsVisible="{Binding IsRunning}"
+                Color="#61DAFB" />
+            <CollectionView
+                Margin="0,64,0,0"
+                BackgroundColor="Red"
+                ItemsSource="{Binding Users}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:UserModel">
                         <VerticalStackLayout>

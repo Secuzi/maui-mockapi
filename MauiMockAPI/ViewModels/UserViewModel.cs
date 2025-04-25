@@ -14,12 +14,25 @@ namespace MauiMockAPI.ViewModels
     public class UserViewModel :INotifyPropertyChanged
     {
         ObservableCollection<UserModel> _users;
-        UserModel _user;
         const string baseUrl = "https://6807401fe81df7060eb95f9f.mockapi.io";
         HttpClient client;
         JsonSerializerOptions _serializerOptions;
+        bool _isRunning;
+
 
         private string _userId;
+        public bool IsRunning
+        {
+            get => _isRunning; 
+            set
+            {
+                if (_isRunning != value)
+                {
+                    _isRunning = value;
+                    OnPropertyChanged(nameof(IsRunning));
+                }
+            }
+        }
         public string UserId
         {
             get => _userId;
@@ -53,20 +66,7 @@ namespace MauiMockAPI.ViewModels
             }
         }
 
-        public UserModel User
-        {
-            get => _user;
-            set
-            {
-                if (value !=  _user)
-                {
-                    _user = value;
-                    OnPropertyChanged(nameof(User));
-                }
-            }
-        }
-
-
+     
         public UserViewModel()
         {
             Client = new HttpClient();
@@ -82,19 +82,23 @@ namespace MauiMockAPI.ViewModels
 
         public ICommand GetAllUserCommand => new Command(async () =>
         {
+
+			Users = [];
+			IsRunning = true;
             var url = $"{baseUrl}/user";
             try
             {
                 var response = await Client.GetStringAsync(url);
-                Users = [];
-				Users = JsonSerializer.Deserialize<ObservableCollection<UserModel>>(response, _serializerOptions) ?? throw new Exception("Internal Server Error");
-
+                using var test = await Client.GetStreamAsync(url);
+                var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions) ?? throw new InvalidOperationException("Failed to deserialize users");
+                Users = users;
+				IsRunning = false;
 
 			}
 			catch (Exception e)
             {
 
-                throw new Exception(e.Message);
+                await Shell.Current.DisplayAlert("An exception happened", e.Message, "Ok");
             }
 
 
@@ -102,19 +106,36 @@ namespace MauiMockAPI.ViewModels
 
         public ICommand GetSingleUser => new Command<string>(async (string id) =>
         {
-            var url = $"{baseUrl}/user/{id}";
+			Users = [];
+            
+            if(string.IsNullOrEmpty(id))
+            {
+				await Shell.Current.DisplayAlert("Cannot be empty", "Input cannot be empty!", "Ok");
+                return;
+			}
+
+			if (!int.TryParse(id, out int parsedInt) || parsedInt <= 0)
+            {
+				await Shell.Current.DisplayAlert("Invalid operator", "Input must be a number and must be greater than 1", "Ok");
+                return;
+			}
+          
+
+			var url = $"{baseUrl}/user/{id}";
             try
             {
-                var response = await Client.GetStringAsync(url);
-				var user = JsonSerializer.Deserialize<UserModel>(response, _serializerOptions) ?? throw new Exception("User not found");
-				Users = [user];
+				IsRunning = true;
+				var response = await Client.GetStreamAsync(url);
+				var user = await JsonSerializer.DeserializeAsync<UserModel>(response, _serializerOptions) ?? throw new InvalidOperationException("Failed to deserialize user");
+				Users.Add(user);
+				IsRunning = false;
 
-            }
+			}
             catch (Exception e)
             {
-
-                throw new Exception(e.Message);
-            }
+				IsRunning = false;
+				await Shell.Current.DisplayAlert("An exception happened", e.Message, "ok");
+			}
 
 
         });
