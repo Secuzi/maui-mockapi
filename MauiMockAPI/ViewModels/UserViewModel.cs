@@ -70,7 +70,7 @@ namespace MauiMockAPI.ViewModels
         public UserViewModel()
         {
             Client = new HttpClient();
-            Users = new ObservableCollection<UserModel>();
+            Users = [];
 
             _serializerOptions = new JsonSerializerOptions()
             {
@@ -90,7 +90,8 @@ namespace MauiMockAPI.ViewModels
             {
                 var response = await Client.GetStringAsync(url);
                 using var test = await Client.GetStreamAsync(url);
-                var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions) ?? throw new InvalidOperationException("Failed to deserialize users");
+                var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions)
+                ?? throw new InvalidOperationException("Failed to deserialize users");
                 Users = users;
 				IsRunning = false;
 
@@ -107,7 +108,7 @@ namespace MauiMockAPI.ViewModels
         public ICommand GetSingleUser => new Command<string>(async (string id) =>
         {
 			Users = [];
-            
+            id = id.Trim();
             if(string.IsNullOrEmpty(id))
             {
 				await Shell.Current.DisplayAlert("Cannot be empty", "Input cannot be empty!", "Ok");
