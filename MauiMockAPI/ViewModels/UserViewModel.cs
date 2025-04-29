@@ -57,7 +57,7 @@ namespace MauiMockAPI.ViewModels
             get => _users;
             set
             {
-                if (value != null || value != _users)
+                if (value != null)
                 {
                     _users = value;
                     OnPropertyChanged(nameof(Users));
@@ -71,11 +71,12 @@ namespace MauiMockAPI.ViewModels
         {
             Client = new HttpClient();
             Users = [];
-
+            UserId = String.Empty;
             _serializerOptions = new JsonSerializerOptions()
             {
-                 WriteIndented = true,
-                PropertyNameCaseInsensitive = true
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
         }
@@ -83,23 +84,24 @@ namespace MauiMockAPI.ViewModels
 	public ICommand AddUserCommand => new Command(async () =>
         {
 
-			
+
+            Users = [];
 			IsRunning = true;
             var url = $"{baseUrl}/user";
             try
             {
-	    	var newUser = new UserModel() {
-		CreatedAt = DateTime.now.ToString(),
-  		Name = "Tralalero Tralala",
-    		CommitMessage = "fix: Myself",
-      		Branch = "main",
-		Avatar = "https://tr.rbxcdn.com/180DAY-603317b38aafc8feff3a9201777d7e3d/420/420/Hat/Webp/noFilter",
-  		}
-     		string json = JsonSerializer.Serialize<UserModel>(newUser, _serializerOptions);
-		StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-  		var response = await Client.PostAsync(url, content);
-    
-				IsRunning = false;
+                var newUser = new UserModel()
+                {                  
+                    CreatedAt = DateTime.Now.ToString(),
+                    Name = "Tralalero Tralala",
+                    CommitMessage = "fix: Myself",
+                    Branch = "main",
+                    Avatar = "https://tr.rbxcdn.com/180DAY-603317b38aafc8feff3a9201777d7e3d/420/420/Hat/Webp/noFilter",
+                };
+     		    string json = JsonSerializer.Serialize<UserModel>(newUser, _serializerOptions);
+		        StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+  		        var response = await Client.PostAsync(url, content);
+                GetAllUserCommand.Execute(GetUser);
 
 			}
 			catch (Exception e)
@@ -110,33 +112,29 @@ namespace MauiMockAPI.ViewModels
 
 
         });
- 
-        public ICommand GetAllUserCommand => new Command(async () =>
+        private async void GetUser()
         {
-
 			Users = [];
 			IsRunning = true;
-            var url = $"{baseUrl}/user";
-            try
-            {
-		
-       
-                var response = await Client.GetStringAsync(url);
-                using var test = await Client.GetStreamAsync(url);
-                var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions)
-                ?? throw new InvalidOperationException("Failed to deserialize users");
-                Users = users;
+			var url = $"{baseUrl}/user";
+			try
+			{
+				//var response = await Client.GetStringAsync(url);
+				using var test = await Client.GetStreamAsync(url);
+				var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions)
+				?? throw new InvalidOperationException("Failed to deserialize users");
+				Users = users;
 				IsRunning = false;
 
 			}
 			catch (Exception e)
-            {
+			{
 
-                await Shell.Current.DisplayAlert("An exception happened", e.Message, "Ok");
-            }
+				await Shell.Current.DisplayAlert("An exception happened", e.Message, "Ok");
+			}
 
-
-        });
+		}
+        public ICommand GetAllUserCommand => new Command(GetUser);
 
         public ICommand GetSingleUser => new Command<string>(async (string id) =>
         {
@@ -159,7 +157,7 @@ namespace MauiMockAPI.ViewModels
             try
             {
 				IsRunning = true;
-				var response = await Client.GetStreamAsync(url);
+				using var response = await Client.GetStreamAsync(url);
 				var user = await JsonSerializer.DeserializeAsync<UserModel>(response, _serializerOptions) ?? throw new InvalidOperationException("Failed to deserialize user");
 				Users.Add(user);
 				IsRunning = false;
