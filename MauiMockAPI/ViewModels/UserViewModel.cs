@@ -80,6 +80,37 @@ namespace MauiMockAPI.ViewModels
 
         }
 
+	public ICommand AddUserCommand => new Command(async () =>
+        {
+
+			
+			IsRunning = true;
+            var url = $"{baseUrl}/user";
+            try
+            {
+	    	var newUser = new UserModel() {
+		CreatedAt = DateTime.now.ToString(),
+  		Name = "Tralalero Tralala",
+    		CommitMessage = "fix: Myself",
+      		Branch = "main",
+		Avatar = "https://tr.rbxcdn.com/180DAY-603317b38aafc8feff3a9201777d7e3d/420/420/Hat/Webp/noFilter",
+  		}
+     		string json = JsonSerializer.Serialize<UserModel>(newUser, _serializerOptions);
+		StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+  		var response = await Client.PostAsync(url, content);
+    
+				IsRunning = false;
+
+			}
+			catch (Exception e)
+            {
+
+                await Shell.Current.DisplayAlert("An exception happened", e.Message, "Ok");
+            }
+
+
+        });
+ 
         public ICommand GetAllUserCommand => new Command(async () =>
         {
 
@@ -88,6 +119,8 @@ namespace MauiMockAPI.ViewModels
             var url = $"{baseUrl}/user";
             try
             {
+		
+       
                 var response = await Client.GetStringAsync(url);
                 using var test = await Client.GetStreamAsync(url);
                 var users = await JsonSerializer.DeserializeAsync<ObservableCollection<UserModel>>(test, _serializerOptions)
