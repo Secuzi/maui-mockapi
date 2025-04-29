@@ -62,7 +62,14 @@
 
                 </HorizontalStackLayout>
             </FlexLayout>
-
+            <Button
+                    Padding="10,4"
+                    BackgroundColor="#33373E"
+                    Command="{Binding AddUserCommand}"
+                    FontFamily="OutfitSemiBold"
+                    FontSize="14"
+                    Text="Add user"
+                    TextColor="#61DAFB" />
 
             <ActivityIndicator
                 Margin="0,84,0,0"
