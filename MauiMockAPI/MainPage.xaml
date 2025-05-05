@@ -16,7 +16,7 @@
                     FontSize="24"
                     Text="MockApi" />
                 <Button
-                    Padding="10,4"
+                    Padding="10, 6"
                     BackgroundColor="#33373E"
                     Command="{Binding GetAllUserCommand}"
                     FontFamily="OutfitSemiBold"
